@@ -19,7 +19,7 @@ class AuthService
 
         abort_if(
             ! $token = Auth::attempt($credentials, true),
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_UNPROCESSABLE_ENTITY,
             'Credentials do not match our records'
         );
 

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
+use Illuminate\Http\Response;
+use App\Http\Services\DepartmentService;
+use App\Http\Resources\DepartmentResource;
 use App\Http\Requests\AttachEmployeeRequest;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
-use App\Http\Resources\DepartmentResource;
-use App\Http\Services\DepartmentService;
 
 class DepartmentController extends Controller
 {
@@ -38,7 +40,7 @@ class DepartmentController extends Controller
         return response()->json([
             'message' => 'Department created successfully',
             'data' => new DepartmentResource($department)
-        ]);
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -47,8 +49,10 @@ class DepartmentController extends Controller
      * @param UpdateDepartmentRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateDepartmentRequest $request)
+    public function update(Department $department, UpdateDepartmentRequest $request)
     {
+        $this->authorize('update', $department);
+
         $department = $this->departmentService->updateDepartment(
             $request->department_id,
             $request->only(['name', 'desctiption'])
@@ -66,11 +70,13 @@ class DepartmentController extends Controller
      * @param integer $department
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(int $department)
+    public function destroy(Department $department)
     {
+        $this->authorize('delete', $department);
+
         return response()->json([
             'message' => 'Department deleted',
-            'data' => $this->departmentService->deleteDepartment($department)
+            'data' => $department->delete()
         ]);
     }
 
