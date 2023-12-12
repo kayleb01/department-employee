@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AttachEmployeeRequest;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
@@ -70,6 +71,25 @@ class DepartmentController extends Controller
         return response()->json([
             'message' => 'Department deleted',
             'data' => $this->departmentService->deleteDepartment($department)
+        ]);
+    }
+
+    /**
+     * Attach employee to department
+     *
+     * @param AttachEmployeeRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function attachEmployee(AttachEmployeeRequest $request)
+    {
+        $department = $this->departmentService->attachEmployee(
+            $request->department_id,
+            $request->employee_id
+        );
+
+        return response()->json([
+            'message' => 'Employee attached to department successfully',
+            'data' => new DepartmentResource($department)
         ]);
     }
 }

@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Http\Services;
 
 use App\Models\Department;
+use App\Models\Employee;
 use Illuminate\Http\Response;
 
 class DepartmentService
@@ -52,7 +55,7 @@ class DepartmentService
         int $departmentId, 
         array $data
     ): \App\Models\Department {
-        
+
         $department = $this->findDepartment($departmentId);
         $department->updateOrFail($data);
 
@@ -81,6 +84,27 @@ class DepartmentService
     public function deleteDepartment(int $departmentId)
     {
         return $this->findDepartment($departmentId)->delete();
+    }
+
+    /**
+     * Attach an employee to a department
+     *
+     * @param int $departmentId
+     * @param int $employeeId
+     * @return \App\Models\Department
+     */
+    public function attachEmployee(
+        int $departmentId, 
+        int $employeeId
+    ): \App\Models\Department {
+
+        $department = $this->findDepartment($departmentId);
+        $employee = Employee::findOrFail($employeeId);
+        
+        $employee->department()->associate($department);
+        $employee->save();
+
+        return $department->load('employees');
     }
 
 }

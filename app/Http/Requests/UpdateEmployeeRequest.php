@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDepartmentRequest extends FormRequest
+class UpdateEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +24,16 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'department_id' => 'required|integer',
+            'employee_id' => 'required|exists:employees,id',
             'name' => 'nullable|string',
-            'description' => 'nullable|string'
+            'email' => [
+                'nullable',
+                 'email',
+                 Rule::unique('employees')->ignore($this->employee_id)
+                ],
+            'phone_number' => 'nullable|string|max:11,min:11',
+            'date_hired' => 'nullable|date'
+        
         ];
     }
 }
