@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Http\Services\EmployeeService;
+use App\Http\Resources\EmployeeResource;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
-use App\Http\Resources\EmployeeResource;
 
 class EmployeeController extends Controller
 {
@@ -36,7 +37,7 @@ class EmployeeController extends Controller
         return response()->json([
             'message' => 'Employee created successfully',
             'data' => new EmployeeResource($department)
-        ]);
+        ], Response::HTTP_CREATED);
     }
 
     /**
